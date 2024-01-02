@@ -21,7 +21,7 @@ jobs:
           aws-region: ${{ secrets.BAHMNI_LITE_AWS_REGION }}
 
       - name: Download OMODs
-        run: aws s3 cp s3://stable/$GITHUN_REF_NAME/ target/ --recursive
+        run: aws s3 cp s3://stable/$GITHUB_REF_NAME/ target/ --recursive
 
       - name: Build docker image
         run: docker build -t openmrs:latest -f package/docker/openmrs/Dockerfile .
