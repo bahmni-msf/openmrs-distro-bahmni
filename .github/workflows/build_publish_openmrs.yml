@@ -31,7 +31,7 @@ jobs:
           aws s3 cp s3://$BUCKET_NAME/visit-close-module/latest/ target/ --recursive
 
       - name: Build docker image
-        run: docker build -t openmrs:latest -f package/docker/Dockerfile .
+        run: docker build -t openmrs:latest -f package/docker/openmrs/Dockerfile .
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
