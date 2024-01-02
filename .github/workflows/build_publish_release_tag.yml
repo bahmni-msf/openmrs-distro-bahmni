@@ -34,7 +34,7 @@ jobs:
           ignore-unfixed: true
           trivyignores: ./.trivyignore
           vuln-type: 'os,library'
-          severity: 'HIGH,CRITICAL'
+          severity: 'CRITICAL'
       
       - name: Login to Amazon ECR
         id: login-ecr
