@@ -29,6 +29,33 @@ jobs:
           aws s3 cp s3://$BUCKET_NAME/patient-identifier-generator/latest/ target/ --recursive
           aws s3 cp s3://$BUCKET_NAME/bahmni-core/latest/ target/ --recursive
           aws s3 cp s3://$BUCKET_NAME/visit-close-module/latest/ target/ --recursive
+
+      - name: Build docker image
+        run: docker build -t openmrs:latest -f package/docker/Dockerfile .
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'openmrs:latest'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'HIGH,CRITICAL'
       
-      - name: show
-        run: ls -al target
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set Image tag varaible
+        run: echo "ARTIFACT_VERSION=$(cat package/.appversion)-$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+
+      - name: Tag and Push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: bahmni-msf-lite/openmrs
+          IMAGE_TAG: ${{ env.ARTIFACT_VERSION }}
+        run: |
+          docker tag openmrs:latest $REGISTRY/$REPOSITORY:latest
+          docker tag openmrs:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:latest
