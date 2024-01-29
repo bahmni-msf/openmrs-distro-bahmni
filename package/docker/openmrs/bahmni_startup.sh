@@ -23,6 +23,7 @@ then
 echo "setting the folder permissions"
 setfacl -d -m o::rx -m g::rx /home/bahmni/document_images/
 setfacl -d -m o::rx -m g::rx /home/bahmni/uploaded_results/
+setfacl -d -m o::rx -m g::rx /home/bahmni/uploaded-files/
 fi
 
 echo "Running OpenMRS Startup Script..."
