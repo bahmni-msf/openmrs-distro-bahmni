@@ -1,7 +1,7 @@
 name: Build and Publish
 on:
   push:
-    branches: [ocp-dev-bahmni-lite-amman]
+    branches: [fix-document-upload]
   workflow_dispatch:
 
 jobs:
@@ -41,7 +41,7 @@ jobs:
           trivyignores: ./.trivyignore
           vuln-type: 'os,library'
           severity: 'CRITICAL'
-      
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
