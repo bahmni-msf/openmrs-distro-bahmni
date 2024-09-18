@@ -14,6 +14,6 @@ COPY target/bahmnicore-*.omod  ${OPENMRS_APPLICATION_DATA_DIRECTORY}/modules
 COPY target/visit-close-module-*.omod ${OPENMRS_APPLICATION_DATA_DIRECTORY}/modules
 COPY target/bahmnimsf-*.omod ${OPENMRS_APPLICATION_DATA_DIRECTORY}/modules
 
-RUN setfacl -R -d -m o::rx -m g::rx /home/bahmni/document_images
-RUN setfacl -R -d -m o::rx -m g::rx /home/bahmni/uploaded_results
-RUN setfacl -R -d -m o::rx -m g::rx /home/bahmni/uploaded-files
+RUN mkdir -p /home/bahmni/uploaded-files
+
+CMD ["./bahmni_startup.sh"]
