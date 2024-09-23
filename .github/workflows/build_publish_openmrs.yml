@@ -1,7 +1,7 @@
 name: Build and Publish
 on:
   push:
-    branches: [ocp-dev-bahmni-lite-amman]
+    branches: [document-upload-fix]
   workflow_dispatch:
 
 jobs:
@@ -41,21 +41,21 @@ jobs:
           trivyignores: ./.trivyignore
           vuln-type: 'os,library'
           severity: 'CRITICAL'
-      
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Set Image tag varaible
-        run: echo "ARTIFACT_VERSION=$(cat package/.appversion)-$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
+#      - name: Login to Amazon ECR
+#        id: login-ecr
+#        uses: aws-actions/amazon-ecr-login@v2
+#
+#      - name: Set Image tag varaible
+#        run: echo "ARTIFACT_VERSION=$(cat package/.appversion)-$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
 
-      - name: Tag and Push docker image to Amazon ECR
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: bahmni-msf-lite/openmrs-amman
-          IMAGE_TAG: ${{ env.ARTIFACT_VERSION }}
-        run: |
-          docker tag openmrs-amman:latest $REGISTRY/$REPOSITORY:latest
-          docker tag openmrs-amman:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          docker push $REGISTRY/$REPOSITORY:latest
+#      - name: Tag and Push docker image to Amazon ECR
+#        env:
+#          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#          REPOSITORY: bahmni-msf-lite/openmrs-amman
+#          IMAGE_TAG: ${{ env.ARTIFACT_VERSION }}
+#        run: |
+#          docker tag openmrs-amman:latest $REGISTRY/$REPOSITORY:latest
+#          docker tag openmrs-amman:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
+#          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+#          docker push $REGISTRY/$REPOSITORY:latest
