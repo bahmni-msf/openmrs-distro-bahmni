@@ -23,7 +23,7 @@ jobs:
       - name: Download OMODs
         env:
           BUCKET_NAME: stable-artefacts
-          RELEASE_VERSION: 2.6.9
+          RELEASE_VERSION: msf-release-2.6.9
         run: |
           aws s3 cp s3://$BUCKET_NAME/$RELEASE_VERSION/openmrs-module-appointments/latest/ target/ --recursive
           aws s3 cp s3://$BUCKET_NAME/$RELEASE_VERSION/openmrs-module-bahmni.ie.apps/latest/ target/ --recursive
