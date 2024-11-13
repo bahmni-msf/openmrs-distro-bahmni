@@ -8,12 +8,13 @@ echo "Substituting Environment Variables..."
 envsubst < /etc/bahmni-emr/templates/bahmnicore.properties.template > ${OPENMRS_APPLICATION_DATA_DIRECTORY}/bahmnicore.properties
 envsubst < /etc/bahmni-emr/templates/openmrs-runtime.properties.template > ${OPENMRS_APPLICATION_DATA_DIRECTORY}/openmrs-runtime.properties
 envsubst < /etc/bahmni-emr/templates/mail-config.properties.template > ${OPENMRS_APPLICATION_DATA_DIRECTORY}/mail-config.properties
-envsubst < /etc/bahmni-emr/templates/appointment.properties.template > ${OPENMRS_APPLICATION_DATA_DIRECTORY}/appointment.properties
+#envsubst < /etc/bahmni-emr/templates/appointment.properties.template > ${OPENMRS_APPLICATION_DATA_DIRECTORY}/appointment.properties
 /openmrs/wait-for-it.sh --timeout=3600 ${OMRS_DB_HOSTNAME}:3306
 
 echo "Copy Configuration Folder from bahmni_config"
 if [ -d /etc/bahmni_config/masterdata/configuration ]
 then
+  echo "Started copying configuration"
   cp -r /etc/bahmni_config/masterdata/configuration/ ${OPENMRS_APPLICATION_DATA_DIRECTORY}/
 fi
 mysql --host="${OMRS_DB_HOSTNAME}" --user="${OMRS_DB_USERNAME}" --password="${OMRS_DB_PASSWORD}" "${OMRS_DB_NAME}" -e "UPDATE global_property SET global_property.property_value = '' WHERE  global_property.property = 'search.indexVersion';" || true
@@ -21,8 +22,9 @@ mysql --host="${OMRS_DB_HOSTNAME}" --user="${OMRS_DB_USERNAME}" --password="${OM
 if [ "${OMRS_DOCKER_ENV}" = 'true' ]
 then
 echo "setting the folder permissions"
-setfacl -d -m o::rx -m g::rx /home/bahmni/document_images/
-setfacl -d -m o::rx -m g::rx /home/bahmni/uploaded_results/
+setfacl -R -d -m o::rx -m g::rx /home/bahmni/document_images
+setfacl -R -d -m o::rx -m g::rx /home/bahmni/uploaded_results
+setfacl -R -d -m o::rx -m g::rx /home/bahmni/uploaded-files
 fi
 
 echo "Running OpenMRS Startup Script..."
