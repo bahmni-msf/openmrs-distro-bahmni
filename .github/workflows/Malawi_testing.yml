@@ -11,8 +11,12 @@ jobs:
     steps:
       - name: Get Code
         uses: actions/checkout@v2
-      - name: Print
-        run: cat ../test.txt
+      - name: Print directrire
+        run: pwd
+      - name: Print files
+        run: ls
+      - name: Print files
+        run: cat test.txt
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
