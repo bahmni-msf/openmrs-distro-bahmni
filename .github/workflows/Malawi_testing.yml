@@ -1,8 +1,7 @@
-name: Build and Publish
+name: Build and Publish Malawi Testing
 on:
   push:
-    tags:
-      - 'msf-release-[0-9]+.[0-9]+.[0-9]+'
+    branches: [ocp-dev-bahmni-lite]
   workflow_dispatch:
 
 jobs:
@@ -12,7 +11,8 @@ jobs:
     steps:
       - name: Get Code
         uses: actions/checkout@v2
-
+      - name: Print
+        run: cat ../test.txt
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -21,7 +21,14 @@ jobs:
           aws-region: ${{ secrets.BAHMNI_LITE_AWS_REGION }}
 
       - name: Download OMODs
-        run: aws s3 cp s3://stable/$GITHUB_REF_NAME/ target/ --recursive
+        env:
+          BUCKET_NAME: v2-artefacts
+        run: |
+          aws s3 cp s3://$BUCKET_NAME/openmrs-module-appointments/latest/ target/ --recursive
+          aws s3 cp s3://$BUCKET_NAME/openmrs-module-bahmni.ie.apps/latest/ target/ --recursive
+          aws s3 cp s3://$BUCKET_NAME/patient-identifier-generator/latest/ target/ --recursive
+          aws s3 cp s3://$BUCKET_NAME/bahmni-core/latest/ target/ --recursive
+          aws s3 cp s3://$BUCKET_NAME/visit-close-module/latest/ target/ --recursive
 
       - name: Build docker image
         run: docker build -t openmrs:latest -f package/docker/openmrs/Dockerfile .
@@ -41,7 +48,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Set Image tag varaible
-        run: echo "ARTIFACT_VERSION=$(cat package/.appversion)-$GITHUB_REF_NAME" >> $GITHUB_ENV
+        run: echo "ARTIFACT_VERSION=$(cat package/.appversion)-$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
 
       - name: Tag and Push docker image to Amazon ECR
         env:
@@ -49,6 +56,7 @@ jobs:
           REPOSITORY: bahmni-msf-lite/openmrs
           IMAGE_TAG: ${{ env.ARTIFACT_VERSION }}
         run: |
-          echo $APP_VERSION
+          docker tag openmrs:latest $REGISTRY/$REPOSITORY:latest
           docker tag openmrs:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:latest
