@@ -2,7 +2,7 @@ name: Build and Publish Malawi Release
 on:
   push:
     branches:
-      - msf-ocp-release
+      - githubActions
   workflow_dispatch:
 
 jobs:
