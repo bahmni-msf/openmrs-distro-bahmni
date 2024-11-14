@@ -2,7 +2,7 @@ name: Build and Publish
 on:
   push:
     branches:
-      - msf-ocp-release
+      - msf-ocp-release-amman
   workflow_dispatch:
 
 jobs:
