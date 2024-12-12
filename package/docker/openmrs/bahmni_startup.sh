@@ -27,5 +27,19 @@ setfacl -R -d -m o::rx -m g::rx /home/bahmni/uploaded_results
 setfacl -R -d -m o::rx -m g::rx /home/bahmni/uploaded-files
 fi
 
+# Path to the web.xml file
+WEB_XML_PATH="/usr/local/tomcat/conf/web.xml"
+
+# Update Session Timeout
+if [ -f "$WEB_XML_PATH" ]; then
+  echo "Updating session-timeout in $WEB_XML_PATH..."
+
+  # Replace the <session-timeout> value
+  sed -i "s|<session-timeout>.*</session-timeout>|<session-timeout>${OPENMRS_APPLICATION_USER_SESSION_TIMEOUT:-60}</session-timeout>|g" "$WEB_XML_PATH"
+else
+  echo "Error: $WEB_XML_PATH not found."
+  exit 1
+fi
+
 echo "Running OpenMRS Startup Script..."
 ./startup.sh
