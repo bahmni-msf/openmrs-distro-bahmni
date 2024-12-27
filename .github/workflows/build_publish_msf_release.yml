@@ -30,6 +30,7 @@ jobs:
           aws s3 cp s3://$BUCKET_NAME/$RELEASE_VERSION/patient-identifier-generator/latest/ target/ --recursive
           aws s3 cp s3://$BUCKET_NAME/$RELEASE_VERSION/bahmni-core/latest/ target/ --recursive
           aws s3 cp s3://$BUCKET_NAME/$RELEASE_VERSION/visit-close-module/latest/ target/ --recursive
+          aws s3 cp s3://$BUCKET_NAME/$RELEASE_VERSION/bahmni-commons/latest/ target/ --recursive
 
       - name: Build docker image
         run: docker build -t openmrs:latest -f package/docker/openmrs/Dockerfile .
